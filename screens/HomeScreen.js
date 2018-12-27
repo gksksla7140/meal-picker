@@ -1,4 +1,5 @@
 import React from 'react';
+import { Rating } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import {
   Button,
@@ -11,10 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { WebBrowser } from 'expo';
 
-import { MonoText } from '../components/StyledText';
-const api_key = process.env.GOOGLE_API;
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -36,6 +34,31 @@ export default class HomeScreen extends React.Component {
     Promise.all([this.getCurrentLocation(), this.getRestaurant()]);
   }
 
+  renderMeal = () => {
+    const meal = this.state.meal;
+    debugger
+    return (
+      <View>
+        <Text>{meal.name}</Text>
+      <Text>{`address: ${meal.vicinity}`}</Text>
+        <Image 
+         style={{width: 50, height: 50}}
+        source={{uri: meal.icon}}/>
+        <Text>{`Open: ${meal.opening_hours.open_now? 'Open': 'Closed'}`}</Text>
+        <Rating
+          type="star"
+          fractions={1}
+          startingValue={meal.rating}
+          imageSize={40}
+          style={{ paddingVertical: 10 }}
+        />
+        <Text>{'$'.repeat(meal.price_level)}</Text>
+      </View>
+
+    );
+
+  }
+
   getCurrentLocation() {
     this.setState({loading: true});
     navigator.geolocation.getCurrentPosition((position) => {
@@ -49,7 +72,7 @@ export default class HomeScreen extends React.Component {
 
   getRestaurant() {
     this.setState({loading: true});
-    let url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.lat},${this.state.long}&radius=500&type=restaurant&key=######`
+    let url = `https://meal-picker.herokuapp.com/google-places?location=${this.state.lat},${this.state.long}`
     fetch(url).
     then(res => res.json()).
     then(res=> {
@@ -64,18 +87,15 @@ export default class HomeScreen extends React.Component {
 
 
 
-  displayData() {
-    return this.state.data.map((el, idx)=> <Text key={idx}>{el.name}</Text>);
-  }
 
-  pickMeal() {
+  pickMeal =() => {
     this.getRestaurant();
     const data = this.state.data;
-    this.setState({meal: data[Math.floor(Math.random() * data.length)].name});
+    this.setState({meal: data[Math.floor(Math.random() * data.length)]});
   }
 
   render() {
-    const meal = this.state.meal;
+    // if loading
     if (this.state.loading) {
       return (
         <View style={styles.container}>
@@ -84,10 +104,13 @@ export default class HomeScreen extends React.Component {
 
       );
     }
+    
+    const meal = this.state.meal ? this.renderMeal() : null;
+    // if not loading
     return (
       <View style={styles.container}>
+          {meal}
         <Button title='Pick a meal' onPress={this.pickMeal}/>
-        <Text style={styles.bigText}>{meal}</Text>
       </View>
     );
   }
