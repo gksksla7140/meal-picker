@@ -1,15 +1,11 @@
 import React from 'react';
-import { Rating } from 'react-native-elements';
+import { Rating, Button } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import {
-  Button,
   Image,
-  Platform,
-  ScrollView,
+  ActivityIndicator,
   StyleSheet,
-   FlatList,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -38,7 +34,7 @@ export default class HomeScreen extends React.Component {
     const meal = this.state.meal;
     debugger
     return (
-      <View>
+      <View style={{height: 500}}>
         <Text>{meal.name}</Text>
       <Text>{`address: ${meal.vicinity}`}</Text>
         <Image 
@@ -98,19 +94,34 @@ export default class HomeScreen extends React.Component {
     // if loading
     if (this.state.loading) {
       return (
-        <View style={styles.container}>
-          <Text style={styles.bigText}>Loading...</Text>
+       <View style={[styles.container]}>
+        <ActivityIndicator size="large" color="#0000ff" />
       </View>
 
       );
     }
     
-    const meal = this.state.meal ? this.renderMeal() : null;
+    const meal = this.state.meal ? this.renderMeal() : <View style={{height: 500}}></View>;
     // if not loading
     return (
       <View style={styles.container}>
           {meal}
-        <Button title='Pick a meal' onPress={this.pickMeal}/>
+        <Button 
+        title='Pick a meal' 
+        onPress={this.pickMeal} borderRadius={25}  
+        color='white'
+        containerViewStyle={{borderRadius:25}}
+        titleStyle={{ fontWeight: "700" }}
+        buttonStyle = {
+          {
+            width: 155,
+            height: 45,
+            borderRadius: 25,
+            backgroundColor: "rgb(247, 159, 121)",
+            borderColor: "transparent",
+          }
+        }        
+        />
       </View>
     );
   }
@@ -124,14 +135,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
+    alignItems: 'center'
 
   
   },
-  button: {
-    
-    margin: 20,
-    paddingTop: 20,
-    backgroundColor: 'red',
+  buttonContainer: { 
   },
   bigText: {
        fontSize: 50,
