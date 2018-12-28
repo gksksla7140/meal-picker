@@ -1,14 +1,35 @@
 import React from 'react';
-import { ExpoConfigView } from '@expo/samples';
+import { Rating, Button, Text } from 'react-native-elements';
+import Colors from '../constants/Colors';
+import {
+  Image,
+  ActivityIndicator,
+  StyleSheet,
+  View,
+  Platform
+} from 'react-native';
 
 export default class SettingsScreen extends React.Component {
-  static navigationOptions = {
-    title: 'app.json',
-  };
 
   render() {
-    /* Go ahead and delete ExpoConfigView and replace it with your
-     * content, we just wanted to give you a quick view of your config */
-    return <ExpoConfigView />;
+    return (
+      <View style={styles.container}>
+        <Text style ={{color: Colors.tintColor }} h2>Work in Progress</Text>
+
+      </View>
+      
+    );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  
+});

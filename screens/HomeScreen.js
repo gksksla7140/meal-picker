@@ -33,24 +33,32 @@ export default class HomeScreen extends React.Component {
 
   renderMeal = () => {
     const meal = this.state.meal;
+    const open = meal.opening_hours.open_now ? 
+    <Text style={{color: '#91e567'}} h3>OPEN</Text> :
+    <Text style={{color: '#e25a48'}} h3>CLOSED</Text> 
+    const price_level = meal.price_level ?
+    <Text style={{color: '#91e567', marginBottom: 5}} h4>{'$'.repeat(meal.price_level)}</Text> :
+    <Text style={{color: '#e25a48', marginBottom: 5}} h4>Price range not given</Text> 
+
     return (
       <View style={[{height: 500}]}>
-      <View style={[{ height: 450, width: 350, borderWidth: 1, borderColor: Colors.tintColor, paddingBottom: 20, borderRadius: 25}, styles.container2]}>
-        <Text style={{textAlign: "center"}} h2>{meal.name}</Text>
-        <Text>{`address: ${meal.vicinity}`}</Text>
-        <Image 
-         style={{width: 50, height: 50}}
-        source={{uri: meal.icon}}/>
-        <Text>{`Open: ${meal.opening_hours.open_now? 'Open': 'Closed'}`}</Text>
+      <View style={[{ height: 450, width: 350, borderWidth: 1, borderColor: Colors.tintColor, paddingBottom: 20, borderRadius: 25}, 
+        styles.container3]}>
+        <Text style={{textAlign: "center", marginBottom: 5}} h2>{meal.name}</Text>
+        <Text style={{textAlign: "center", marginBottom: 5}}>{meal.vicinity}</Text>
+        {open}
         <Rating
           type="star"
           readonly
           fractions={1}
           startingValue={meal.rating}
-          imageSize={40}
+          imageSize={30}
           style={{ paddingVertical: 10 }}
         /> 
-        <Text>{'$'.repeat(meal.price_level)}</Text>
+        {price_level}
+        <Image 
+         style={{width: 50, height: 50}}
+        source={{uri: meal.icon}}/>
       </View>
       </View>
 
@@ -204,7 +212,12 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-
+  },
+  container3: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
 
   },
   buttonContainer: { 
