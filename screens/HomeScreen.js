@@ -1,13 +1,16 @@
 import React from 'react';
 import { Rating, Button } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
+import { Icon } from 'expo';
 import {
   Image,
   ActivityIndicator,
   StyleSheet,
   Text,
   View,
+  Platform
 } from 'react-native';
+import Colors from '../constants/Colors';
 
 
 export default class HomeScreen extends React.Component {
@@ -32,17 +35,23 @@ export default class HomeScreen extends React.Component {
 
   renderMeal = () => {
     const meal = this.state.meal;
-    debugger
+    // const textComp = (text) => (
+    //   // <Text style={}>
+    //   //   {text}
+    //   // </Text>
+    // );
+
     return (
-      <View style={{height: 500}}>
+      <View style={[{height: 500}, styles.container2]}>
         <Text>{meal.name}</Text>
-      <Text>{`address: ${meal.vicinity}`}</Text>
+        <Text>{`address: ${meal.vicinity}`}</Text>
         <Image 
          style={{width: 50, height: 50}}
         source={{uri: meal.icon}}/>
         <Text>{`Open: ${meal.opening_hours.open_now? 'Open': 'Closed'}`}</Text>
         <Rating
           type="star"
+          readonly
           fractions={1}
           startingValue={meal.rating}
           imageSize={40}
@@ -92,10 +101,21 @@ export default class HomeScreen extends React.Component {
 
   instruction = () => {
     return (
-      <View style={{height: 500}}>
-          <Text>
-            Press the button below to pick a meal!
+      <View style={[styles.container2, {height: 500}]}>
+          <Text style={{color: Colors.tintColor, fontSize: 20, marginBottom: 30}}>
+            Press the button below to pick a meal
           </Text>
+          <Icon.Ionicons
+              name={
+                  Platform.OS === 'ios'
+                ? `ios-pizza`
+                : 'md-pizza'
+              }
+              size={100}
+              style={{ marginBottom: -3 }}
+              color={Colors.tintColor}
+          />
+
       </View>
     );
   }
@@ -140,6 +160,14 @@ const styles = StyleSheet.create({
     alignItems: 'center'
 
   
+  },
+  container2: {
+    backgroundColor: '#fff',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
+
   },
   buttonContainer: { 
   },
