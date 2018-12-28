@@ -1,12 +1,11 @@
 import React from 'react';
-import { Rating, Button } from 'react-native-elements';
+import { Rating, Button, Text } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import { Icon } from 'expo';
 import {
   Image,
   ActivityIndicator,
   StyleSheet,
-  Text,
   View,
   Platform
 } from 'react-native';
@@ -35,15 +34,10 @@ export default class HomeScreen extends React.Component {
 
   renderMeal = () => {
     const meal = this.state.meal;
-    // const textComp = (text) => (
-    //   // <Text style={}>
-    //   //   {text}
-    //   // </Text>
-    // );
-
     return (
-      <View style={[{height: 500}, styles.container2]}>
-        <Text>{meal.name}</Text>
+      <View style={[{height: 500}]}>
+      <View style={[{ height: 450, width: 350, borderWidth: 1, borderColor: Colors.tintColor, paddingBottom: 20, borderRadius: 25}, styles.container2]}>
+        <Text style={{textAlign: "center"}} h2>{meal.name}</Text>
         <Text>{`address: ${meal.vicinity}`}</Text>
         <Image 
          style={{width: 50, height: 50}}
@@ -56,8 +50,9 @@ export default class HomeScreen extends React.Component {
           startingValue={meal.rating}
           imageSize={40}
           style={{ paddingVertical: 10 }}
-        />
+        /> 
         <Text>{'$'.repeat(meal.price_level)}</Text>
+      </View>
       </View>
 
     );
@@ -162,11 +157,11 @@ const styles = StyleSheet.create({
   
   },
   container2: {
-    backgroundColor: '#fff',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+
 
   },
   buttonContainer: { 
