@@ -1,5 +1,6 @@
 import React from 'react';
 import { Rating, Button, Text } from 'react-native-elements';
+import { Constants, Location, Permissions } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { Icon } from 'expo';
 import {
@@ -17,8 +18,8 @@ export default class HomeScreen extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      lat: 47.884381,
-      long: -122.281640,
+      lat: null,
+      long: null,
       data: [],
       meal: null,
     }
@@ -28,9 +29,7 @@ export default class HomeScreen extends React.Component {
     header: null,
   };
 
-  componentDidMount() {
-    Promise.all([this.getCurrentLocation(), this.getRestaurant()]);
-  }
+
 
   renderMeal = () => {
     const meal = this.state.meal;
@@ -59,20 +58,37 @@ export default class HomeScreen extends React.Component {
 
   }
 
-  getCurrentLocation() {
+  handleClick=()=> {
+      // Promise.all([this.getCurrentLocation(), this.getRestaurant()]);
+      this.getRestaurant();
+      this.pickMeal();
+  }
+
+  getCurrentLocation = async () => {
     this.setState({loading: true});
-    navigator.geolocation.getCurrentPosition((position) => {
-    const latitude = Number(position.coords.latitude.toFixed(6));
-    const longitude = Number(position.coords.longitude.toFixed(6));
-    this.setState({lat: latitude, long: longitude, loading: false});
-    });
+    // navigator.geolocation.getCurrentPosition((position) => {
+    //   debugger
+    // const latitude = Number(position.coords.latitude.toFixed(6));
+    // const longitude = Number(position.coords.longitude.toFixed(6));
+    // this.setState({lat: latitude, long: longitude, loading: false});
+    // });
+        let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ lat: location.coords.latitude, long: location.coords.longitude });
   }
 
 
 
-  getRestaurant() {
+  getRestaurant= async () =>  {
+    // 47.884375, -122.281699
     this.setState({loading: true});
-    let url = `https://meal-picker.herokuapp.com/google-places?location=${this.state.lat},${this.state.long}`
+     await this.getCurrentLocation();
+    let url = `https://meal-picker.herokuapp.com/google-places?location=${47.884375},${-122.281699}`
     fetch(url).
     then(res => res.json()).
     then(res=> {
@@ -83,6 +99,7 @@ export default class HomeScreen extends React.Component {
         loading: false
       });
     });
+    debugger
   }
 
 
@@ -133,7 +150,8 @@ export default class HomeScreen extends React.Component {
           {meal}
         <Button 
         title='Pick a meal' 
-        onPress={this.pickMeal} borderRadius={25}  
+        onPress={this.handleClick} 
+        borderRadius={25}  
         color='white'
         containerViewStyle={{borderRadius:25}}
         titleStyle={{ fontWeight: "700" }}
