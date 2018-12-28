@@ -22,6 +22,7 @@ export default class HomeScreen extends React.Component {
       long: null,
       data: [],
       meal: null,
+      noResult: false,
     }
     this.pickMeal = this.pickMeal.bind(this);
   }
@@ -85,30 +86,56 @@ export default class HomeScreen extends React.Component {
 
 
   getRestaurant= async () =>  {
-    // 47.884375, -122.281699
     this.setState({loading: true});
-     await this.getCurrentLocation();
-    let url = `https://meal-picker.herokuapp.com/google-places?location=${47.884375},${-122.281699}`
+    await this.getCurrentLocation();
+    let url = `https://meal-picker.herokuapp.com/google-places?location=${this.state.lat},${this.state.long}`
     fetch(url).
     then(res => res.json()).
     then(res=> {
-      this.setState({data: res.results, loading:false});
+      if (res.status === 'ZERO_RESULTS') {
+        this.setState({noResult: true, loading: false})
+      } else {
+        this.setState({data: res.results, loading:false, noResult: false});
+      }
     }).catch(error => {
       console.log(error);
       this.setState({
         loading: false
       });
     });
-    debugger
   }
 
 
 
 
   pickMeal =() => {
-    this.getRestaurant();
-    const data = this.state.data;
-    this.setState({meal: data[Math.floor(Math.random() * data.length)]});
+     this.getRestaurant().then(() => {
+       const data = this.state.data;
+       this.setState({meal: data[Math.floor(Math.random() * data.length)]});
+     })
+  }
+
+  noResult = () => {
+    return (
+        <View style={[styles.container2, {height: 500}]}>
+          <Text style={{color: '#ff7575', fontSize: 20, marginBottom: 30}}>
+            No place was found around the radius
+          </Text>
+          <Icon.Ionicons
+              name={
+                  Platform.OS === 'ios'
+                ? `ios-alert`
+                : 'md-alert'
+              }
+              size={100}
+              style={{ marginBottom: -3 }}
+              color={Colors.tintColor}
+          />
+
+      </View>
+
+
+    );
   }
 
   instruction = () => {
@@ -142,12 +169,21 @@ export default class HomeScreen extends React.Component {
 
       );
     }
+
     
-    const meal = this.state.meal ? this.renderMeal() : this.instruction();
+    const meal=() => {
+      if (this.state.meal) {
+        return this.renderMeal();
+      } else if (this.state.noResult) {
+        return this.noResult();
+      } else {
+        return this.instruction();
+      }
+    };
     // if not loading
     return (
       <View style={styles.container}>
-          {meal}
+          {meal()}
         <Button 
         title='Pick a meal' 
         onPress={this.handleClick} 
