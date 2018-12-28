@@ -1,8 +1,10 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import Colors from '../constants/Colors';
 
 import TabBarIcon from '../components/TabBarIcon';
+import TabLabel from '../components/TabLabel';
 import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
@@ -11,14 +13,18 @@ const HomeStack = createStackNavigator({
 });
 
 HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+  tabBarLabel: ({focused}) => (
+    <TabLabel focused={focused} name={
+       "Home"
+      }/>
+  ),
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={
         Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
+          ? `ios-restaurant${focused ? '' : '-outline'}`
+          : 'md-restaurant'
       }
     />
   ),
@@ -30,7 +36,11 @@ const SettingsStack = createStackNavigator({
 });
 
 SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
+  tabBarLabel: ({focused}) => (
+    <TabLabel focused={focused} name={
+       "Setting"
+      }/>
+  ),
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}

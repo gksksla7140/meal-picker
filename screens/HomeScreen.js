@@ -90,18 +90,28 @@ export default class HomeScreen extends React.Component {
     this.setState({meal: data[Math.floor(Math.random() * data.length)]});
   }
 
+  instruction = () => {
+    return (
+      <View style={{height: 500}}>
+          <Text>
+            Press the button below to pick a meal!
+          </Text>
+      </View>
+    );
+  }
+
   render() {
     // if loading
     if (this.state.loading) {
       return (
        <View style={[styles.container]}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#f79f79" />
       </View>
 
       );
     }
     
-    const meal = this.state.meal ? this.renderMeal() : <View style={{height: 500}}></View>;
+    const meal = this.state.meal ? this.renderMeal() : this.instruction();
     // if not loading
     return (
       <View style={styles.container}>
@@ -112,15 +122,7 @@ export default class HomeScreen extends React.Component {
         color='white'
         containerViewStyle={{borderRadius:25}}
         titleStyle={{ fontWeight: "700" }}
-        buttonStyle = {
-          {
-            width: 155,
-            height: 45,
-            borderRadius: 25,
-            backgroundColor: "rgb(247, 159, 121)",
-            borderColor: "transparent",
-          }
-        }        
+        buttonStyle = {styles.buttonStyle}        
         />
       </View>
     );
@@ -144,6 +146,13 @@ const styles = StyleSheet.create({
   bigText: {
        fontSize: 50,
        fontWeight: 'bold',
+  },
+  buttonStyle:{
+    width: 155,
+    height: 45,
+    borderRadius: 25,
+    backgroundColor: "rgb(247, 159, 121)",
+    borderColor: "transparent",
   }
 
 });
