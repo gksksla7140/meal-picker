@@ -24,7 +24,6 @@ export default class HomeScreen extends React.Component {
       meal: null,
       noResult: false,
     }
-    this.pickMeal = this.pickMeal.bind(this);
   }
   static navigationOptions = {
     header: null,
@@ -59,20 +58,13 @@ export default class HomeScreen extends React.Component {
 
   }
 
-  handleClick=()=> {
-      // Promise.all([this.getCurrentLocation(), this.getRestaurant()]);
-      this.getRestaurant();
-      this.pickMeal();
+  handleClick=(e)=> {
+    e.preventDefault();
+    this.getRestaurant().then(()=> {this.pickMeal()}); 
   }
 
   getCurrentLocation = async () => {
     this.setState({loading: true});
-    // navigator.geolocation.getCurrentPosition((position) => {
-    //   debugger
-    // const latitude = Number(position.coords.latitude.toFixed(6));
-    // const longitude = Number(position.coords.longitude.toFixed(6));
-    // this.setState({lat: latitude, long: longitude, loading: false});
-    // });
         let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
       this.setState({
@@ -88,8 +80,9 @@ export default class HomeScreen extends React.Component {
   getRestaurant= async () =>  {
     this.setState({loading: true});
     await this.getCurrentLocation();
-    let url = `https://meal-picker.herokuapp.com/google-places?location=${this.state.lat},${this.state.long}`
-    fetch(url).
+    // let url = `https://meal-picker.herokuapp.com/google-places?location=${this.state.lat},${this.state.long}`
+    let url = 'https://meal-picker.herokuapp.com/google-places?location=47.884381,-122.281640';
+   await  fetch(url).
     then(res => res.json()).
     then(res=> {
       if (res.status === 'ZERO_RESULTS') {
@@ -109,10 +102,9 @@ export default class HomeScreen extends React.Component {
 
 
   pickMeal =() => {
-     this.getRestaurant().then(() => {
-       const data = this.state.data;
-       this.setState({meal: data[Math.floor(Math.random() * data.length)]});
-     })
+    const data = this.state.data;
+    this.setState({meal: data[Math.floor(Math.random() * data.length)]});
+    console.log(data);
   }
 
   noResult = () => {
@@ -131,7 +123,6 @@ export default class HomeScreen extends React.Component {
               style={{ marginBottom: -3 }}
               color={Colors.tintColor}
           />
-
       </View>
 
 
@@ -170,20 +161,18 @@ export default class HomeScreen extends React.Component {
       );
     }
 
-    
-    const meal=() => {
+    let meal;
       if (this.state.meal) {
-        return this.renderMeal();
+        meal =  this.renderMeal();
       } else if (this.state.noResult) {
-        return this.noResult();
+        meal =  this.noResult();
       } else {
-        return this.instruction();
+        meal =  this.instruction();
       }
-    };
     // if not loading
     return (
       <View style={styles.container}>
-          {meal()}
+          {meal}
         <Button 
         title='Pick a meal' 
         onPress={this.handleClick} 
