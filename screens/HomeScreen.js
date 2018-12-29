@@ -88,8 +88,8 @@ export default class HomeScreen extends React.Component {
   getRestaurant= async () =>  {
     this.setState({loading: true});
     await this.getCurrentLocation();
-    // let url = `https://meal-picker.herokuapp.com/google-places?location=${this.state.lat},${this.state.long}`
-    let url = 'https://meal-picker.herokuapp.com/google-places?location=47.884381,-122.281640';
+    let url = `https://meal-picker.herokuapp.com/google-places?location=${this.state.lat},${this.state.long}`
+    // let url = 'https://meal-picker.herokuapp.com/google-places?location=47.884381,-122.281640';
    await  fetch(url).
     then(res => res.json()).
     then(res=> {
@@ -112,14 +112,13 @@ export default class HomeScreen extends React.Component {
   pickMeal =() => {
     const data = this.state.data;
     this.setState({meal: data[Math.floor(Math.random() * data.length)]});
-    console.log(data);
   }
 
   noResult = () => {
     return (
         <View style={[styles.container2, {height: 500}]}>
           <Text style={{color: '#ff7575', fontSize: 20, marginBottom: 30}}>
-            No place was found around the radius
+            No place was found around the area
           </Text>
           <Icon.Ionicons
               name={
@@ -141,7 +140,7 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={[styles.container2, {height: 500}]}>
           <Text style={{color: Colors.tintColor, fontSize: 20, marginBottom: 30}}>
-            Press the button below to pick a meal
+              Press the button below to pick a meal
           </Text>
           <Icon.Ionicons
               name={
